@@ -4,6 +4,7 @@ package com.ecommerce.store.service;
 import com.ecommerce.store.entity.User;
 import com.ecommerce.store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +14,16 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<User> findAll() {
         return repository.findAll();
     }
 
-    public User save(User user) {
-        return repository.save(user);
+    public void save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
+        repository.save(user);
     }
 
     public User findById(Long id) {
