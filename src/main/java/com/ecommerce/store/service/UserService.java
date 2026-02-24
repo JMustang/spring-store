@@ -37,4 +37,10 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return repository.findByEmail(email).isPresent();
     }
+
+    public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
+        return repository.save(user);
+    }
 }
