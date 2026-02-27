@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/products")
@@ -21,6 +22,8 @@ public class ProductController {
         return "products/list";
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("product", new Product());
@@ -33,12 +36,16 @@ public class ProductController {
         return "redirect:/products";
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
         model.addAttribute("product", service.findById(id));
         return "products/form";
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         service.delete(id);
