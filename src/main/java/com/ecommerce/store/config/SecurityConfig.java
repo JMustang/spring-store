@@ -14,37 +14,34 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/css/**").permitAll()
+                http
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/login", "/register", "/css/**").permitAll()
 
-                        // ADMIN
-                        .requestMatchers("products/new").hasRole("ADMIN")
-                        .requestMatchers("products/edit/**").hasRole("ADMIN")
-                        .requestMatchers("products/delete/**").hasRole("ADMIN")
+                                                // ADMIN
+                                                .requestMatchers("/products/new").hasRole("ADMIN")
+                                                .requestMatchers("/products/edit/**").hasRole("ADMIN")
+                                                .requestMatchers("/products/delete/**").hasRole("ADMIN")
 
+                                                .anyRequest().authenticated()
 
-                        .anyRequest().authenticated()
+                                )
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .defaultSuccessUrl("/products", true)
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutSuccessUrl("/login?logout"));
 
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/products", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                );
+                return http.build();
 
-        return http.build();
+        }
 
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
