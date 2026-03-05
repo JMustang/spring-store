@@ -34,11 +34,21 @@ public class CartService {
     public void addProduct(Long productId) {
 
         Cart cart = getCartForCurrentUser();
-        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        // Validar estoque disponível
+        if (product.getStock() <= 0) {
+            throw new RuntimeException("Produto fora de estoque");
+        }
 
         // Verifica se já existe no carrinho
         for (CartItem item : cart.getItems()) {
             if (item.getProduct().getId().equals(productId)) {
+                // Validar quantidade em estoque
+                if (item.getQuantity() >= product.getStock()) {
+                    throw new RuntimeException("Quantidade solicitada excede o estoque disponível");
+                }
                 item.setQuantity(item.getQuantity() + 1);
                 cartRepository.save(cart);
                 return;

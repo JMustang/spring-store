@@ -25,6 +25,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/products/new").hasRole("ADMIN")
                                                 .requestMatchers("/products/edit/**").hasRole("ADMIN")
                                                 .requestMatchers("/products/delete/**").hasRole("ADMIN")
+                                                .requestMatchers("/users/**").hasRole("ADMIN")
+
+                                                // Proteger cart
+                                                .requestMatchers("/cart/**").authenticated()
 
                                                 .anyRequest().authenticated()
 

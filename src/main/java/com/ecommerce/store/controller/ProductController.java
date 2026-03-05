@@ -1,13 +1,14 @@
 package com.ecommerce.store.controller;
 
-
 import com.ecommerce.store.entity.Product;
 import com.ecommerce.store.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/products")
@@ -22,7 +23,6 @@ public class ProductController {
         return "products/list";
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String createForm(Model model) {
@@ -30,12 +30,15 @@ public class ProductController {
         return "products/form";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public String save(@ModelAttribute Product product) {
+    public String save(@Valid @ModelAttribute Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            return "products/form";
+        }
         service.save(product);
         return "redirect:/products";
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
@@ -44,7 +47,6 @@ public class ProductController {
         return "products/form";
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
@@ -52,5 +54,3 @@ public class ProductController {
         return "redirect:/products";
     }
 }
-
-

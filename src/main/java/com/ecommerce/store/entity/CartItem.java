@@ -1,6 +1,7 @@
 package com.ecommerce.store.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Positive(message = "Quantidade deve ser maior que zero")
     private Integer quantity;
 
     @ManyToOne
