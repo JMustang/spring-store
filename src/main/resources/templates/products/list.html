@@ -28,6 +28,11 @@
           th:value="${_csrf.token}"
         />
         <button type="submit" class="btn btn-secondary mb-3">Logout</button>
+
+        <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post">
+          <button class="btn btn-success btn-sm">Add to Cart</button>
+        </form>
+
       </form>
     </div>
 
