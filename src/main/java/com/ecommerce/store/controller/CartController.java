@@ -16,7 +16,15 @@ public class CartController {
 
     @GetMapping
     public String viewCart(Model model) {
-        model.addAttribute("cart", cartService.getCartForCurrentUser());
+        var cart = cartService.getCartForCurrentUser();
+        model.addAttribute("cart", cart);
+        
+        // Calcular o total do carrinho
+        double total = cart.getItems().stream()
+            .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice())
+            .sum();
+        model.addAttribute("total", String.format("%.2f", total));
+        
         return "cart/view";
     }
 
